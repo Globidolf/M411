@@ -11,6 +11,12 @@ import java.util.ArrayList;
 
 import main.Utility;
 
+/**
+ * The class for the Mini-Project for the Module 411.
+ * Provides a main method plus the classes required for the project as subclasses.
+ * This class uses the custom Utility class for it's simplified wrappers of the system print and read methods.
+ * @author Silvan Pfister
+ */
 public class HighScoreProjekt {
 	/**
 	 * Application Entry Point.
@@ -21,7 +27,7 @@ public class HighScoreProjekt {
 		// Variable Declaration
 		HighScoreAdmin admin = new HighScoreAdmin();
 		String input; 
-		// As the console io can throw exceptions, the whole process is wrapped in a try block 
+		// As the console IO can throw exceptions, the whole process is wrapped in a try block 
 		try {
 			// reads input and verifies it at the same time, if it is 'e' or 'exit', the loop will end
 			while (!(input = 
@@ -90,94 +96,163 @@ public class HighScoreProjekt {
 	public static class HighScoreAdmin{
 		
 		/**
-		 * The storage of the highscore data.
+		 * The storage of the highScore data.
 		 */
 		private ArrayList<HighScore> HighScores;
 		
 		/**
-		 * Constructor. Initializes the highscore list.
+		 * Constructor. Initialises the highScore list.
 		 */
 		public HighScoreAdmin(){ HighScores = new ArrayList<>(); }
 		
+		/**
+		 * Adds a highScore instance to the list and connects it.
+		 * @param highScore The highScore instance
+		 */
 		public void add(HighScore highScore){
+			// reference used to format the output string
 			highScore.admin = this;
 			HighScores.add(highScore); 
 		}
-		
+		/**
+		 * Loads all hichScores from the specified file
+		 * @param fileName The file to load from
+		 */
 		public void load(String fileName){
+			// amount of highScores before loading, to calculate the new ones in the output.
 			int before = HighScores.size();
 			File f = new File(fileName);
+			// If the file does not exist, there is nothing to load, so return
 			if (!f.exists()) return;
+			// potential IO errors
 			try {
+				// create a buffered reader from the file
 				FileReader fr = new FileReader(f);
 				BufferedReader br = new BufferedReader(fr);
 				String line;
+				// read all lines and add an entry for each line
 				while ((line = br.readLine()) != null)
-					add(HighScore.Deserialize(line));
+					add(HighScore.deserialise(line));
+				// close the readers
 				br.close();
 				fr.close();
-			} catch (IOException e) {
+				Utility.WriteOutput("Successfully loaded " + (HighScores.size() - before) + " scores.");
+			} catch (IOException e) { // some error occurred
 				e.printStackTrace();
 			}
-			Utility.WriteOutput("Successfully loaded " + (HighScores.size() - before) + " scores.");
 		}
 		
+		/**
+		 * Saves the current highScores to the specified file
+		 * @param fileName The name of the file to save the highScores in
+		 */
 		public void save(String fileName){
 			File f = new File(fileName);
+			// Potential IO errors
 			try {
-				if (f.exists()) 
-					f.delete();
+				// We will not append to prevent duplicate entries, so if the file already exists, delete it.
+				if (f.exists()) f.delete();
+				// create the file anew and create a buffered writer for it
 				f.createNewFile();
 				FileWriter fw = new FileWriter(f);
 				BufferedWriter bw = new BufferedWriter(fw);
+				// serialise each entry and write it to a separate line
 				for (HighScore highScore : HighScores) {
-					bw.write(highScore.Serialize());
+					bw.write(highScore.serialise());
 					bw.newLine();
 				}
+				// Close the writers
 				bw.close();
 				fw.close();
-			} catch (IOException e) {
+				Utility.WriteOutput("Succesfully saved " + HighScores.size() + " Highscores.");
+			} catch (IOException e) { // an error occurred
 				e.printStackTrace();
 			}
-			Utility.WriteOutput("Succesfully saved " + HighScores.size() + " Highscores.");
 		}
 		
+		/**
+		 * Gets the size of the longest name in the highScores
+		 * @return The highest length of a name available
+		 */
 		public int nameLength(){
+			// Initialise this with zero, then compare each name and reset the length if longer.
 			int len = 0;
 			for (HighScore highScore : HighScores)
 				if (highScore.userName.length() > len) len = highScore.userName.length();
 			return len;
 		}
 		
+		/**
+		 * Display every scoring available.
+		 */
 		public void completeScoring(){
 			Utility.WriteOutput("Showing Scores for all Levels:");
+			// Order by score, descending
 			HighScores.sort((score1, score2)-> score2.score.compareTo(score1.score));
-			for (HighScore highScore : HighScores)
+			for (HighScore highScore : HighScores) // append level name to the score
 				Utility.WriteOutput(highScore.toString() + " from level '" + highScore.level + "'");
 		}
 		
+		/**
+		 * Display every scoring from the specified level
+		 * @param level The level to list the scores for
+		 */
 		public void levelScoring(String level){
+			// Order by score, descending
 			HighScores.sort((score1, score2)-> score2.score.compareTo(score1.score));
 			Utility.WriteOutput("Showing Scores for level '" + level + "':");
-			for (HighScore highScore : HighScores)
+			for (HighScore highScore : HighScores) // iterate all scores and only display those with the specified level.
 				if (highScore.level.equals(level))
 					Utility.WriteOutput(highScore.toString());
 		}
 	}
 	
+	/**
+	 * This class represents a HighScore, including name, level, date and score itself
+	 * @author Silvan Pfister
+	 *
+	 */
 	public static class HighScore{
-		public HighScoreAdmin admin;
-		public String userName;
-		public Instant date;
-		public String level;
-		public Integer score;
+		/**
+		 * The HighScoreAdmin instance used to manage this HighScore instance
+		 */
+		private HighScoreAdmin admin;
+		/**
+		 * The userName of the person that achieved this score 
+		 */
+		private String userName;
+		/**
+		 * The date when this score was taken
+		 */
+		private Instant date;
+		/**
+		 * The level this score was made in
+		 */
+		private String level;
+		/**
+		 * The score value
+		 */
+		private Integer score;
 		
+		/**
+		 * Creates a new HighScore instance with the specified values, the date being the moment the score is created.
+		 * @param userName The userName
+		 * @param level The level
+		 * @param score The score 
+		 */
 		public HighScore(String userName, String level, Integer score){
 			this.userName = userName;
 			this.date = Instant.now();
 			this.level = level;
 			this.score = score;
 		}
+		/**
+		 * Creates a new HighScore instance with the specified values.
+		 * @param userName The userName
+		 * @param date The date
+		 * @param level The level
+		 * @param score The score
+		 */
 		public HighScore(String userName, Instant date, String level, Integer score){ 
 			this.userName = userName;
 			this.date = date;
@@ -185,17 +260,29 @@ public class HighScoreProjekt {
 			this.score = score;
 		}
 		
-		public static HighScore Deserialize(String raw){
+		/**
+		 * Creates a HighScore instance from a serialised string
+		 * @param raw The raw serialised string from a previous serialise method call
+		 * @return The HighScore instance that was represented by the raw string
+		 */
+		public static HighScore deserialise(String raw){
+			// Turns escaped backslashes back to normal backslashes
 			raw = raw.replace("\\\\", "\\");
+			// Splits the raw to the semicolon separated parts. ignores escaped semicolons
 			String[] parts = raw.split("(?<!\\\\);");
+			// Creates a new instance from the parts
 			return new HighScore(
 					parts[0],
 					Instant.parse(parts[1]),
 					parts[2],
 					Integer.parseInt(parts[3]));
 		}
-		
-		public String Serialize(){
+		/**
+		 * Creates a serialised String instance from the current HighScore instance which can be recovered using the deserialise method.
+		 * @return A String representation of this HighScore instance.
+		 */
+		public String serialise(){
+			// Creates the raw string while escaping backslashes and unintended semicolons.
 			String result = "";
 			result += userName.replace("\\", "\\\\").replace(";", "\\;") + ";";
 			result += date.toString() + ";";
@@ -204,10 +291,15 @@ public class HighScoreProjekt {
 			return result;
 		}
 		
+		/**
+		 * Represents this HighScore instance in a table like String format. The Level is omitted.
+		 */
 		@Override
 		public String toString() {
+			// if this instance is part of an admin instance, get the name length from there
 			int len = 0;
 			if (admin != null) len = admin.nameLength();
+			// The following format call formats the text as in the example below
 			return String.format( // YYYY.MM.DD HH:MM:SS | userName____ | ____score
 					"%1$tY.%1$tm.%1$td %1$tH:%1$tM:%1$tS | %2$-"+len+"s | %3$12d", 
 					date.toEpochMilli(), //$1
