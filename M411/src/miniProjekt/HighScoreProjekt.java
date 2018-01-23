@@ -75,9 +75,9 @@ public class HighScoreProjekt {
 					case "d": // display all entries or filter by level from input of user
 						String level;
 						if (!(level = Utility.ReadInput("Enter the Level name, or nothing to show all entries").trim()).isEmpty())
-							admin.levelScoring(level);
+							Utility.WriteOutput(admin.levelScoring(level));
 						else
-							admin.completeScoring();
+							Utility.WriteOutput(admin.completeScoring());
 						break;
 					default: // invalid input 
 						Utility.WriteOutput("Unknown Input Value: " + input);
@@ -236,25 +236,40 @@ public class HighScoreProjekt {
 		/**
 		 * Display every scoring available.
 		 */
-		public void completeScoring(){
-			Utility.WriteOutput("Showing Scores for all Levels:");
+		public String completeScoring(){
+			String result = "Showing Scores for all Levels:\n";
 			// Order by score, descending
 			HighScores.sort((score1, score2)-> score2.score.compareTo(score1.score));
 			for (HighScore highScore : HighScores) // append level name to the score
-				Utility.WriteOutput(highScore.toString() + " from level '" + highScore.level + "'");
+				result += highScore.toString() + " from level '" + highScore.level + "'\n";
+			return result;
 		}
 		
 		/**
 		 * Display every scoring from the specified level
 		 * @param level The level to list the scores for
 		 */
-		public void levelScoring(String level){
+		public String levelScoring(String level){
+			String result = "Showing Scores for level '" + level + "':\n";
 			// Order by score, descending
 			HighScores.sort((score1, score2)-> score2.score.compareTo(score1.score));
-			Utility.WriteOutput("Showing Scores for level '" + level + "':");
 			for (HighScore highScore : HighScores) // iterate all scores and only display those with the specified level.
 				if (highScore.level.equals(level))
-					Utility.WriteOutput(highScore.toString());
+					result += highScore.toString() + "\n";
+			return result;
+		}
+		
+		/**
+		 * Gets all HighScores of the specified level and returns them as array sorted by score
+		 * @param level The level
+		 * @return An Array of HighScores
+		 */
+		public HighScore[] getHighScores(String level){
+			ArrayList<HighScore> result = new ArrayList<>();
+			for(HighScore score : HighScores)
+				if (score.level.equals(level)) result.add(score);
+			result.sort((s1,s2)->s2.score.compareTo(s1.score));
+			return result.toArray(new HighScore[result.size()]);
 		}
 	}
 	
