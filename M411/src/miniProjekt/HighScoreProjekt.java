@@ -7,6 +7,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.Instant;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 
 import main.Utility;
@@ -39,7 +40,9 @@ public class HighScoreProjekt {
 				switch (input) {
 					case "load":
 					case "l": // load a save from the given file
-						admin.load(Utility.ReadInput("Enter the Filename"));
+						input = Utility.ReadInput("Enter the Filename or nothing to load from the default file");
+						if(input.isEmpty()) admin.load(); 
+						else admin.load(input);
 						break;
 					case "new":
 					case "n":
@@ -64,7 +67,9 @@ public class HighScoreProjekt {
 						break;
 					case "save":
 					case "s": // save the current state to a specified file
-						admin.save(Utility.ReadInput("Enter the Filename"));
+						input = Utility.ReadInput("Enter the Filename or nothing to save to the default file");
+						if(input == null || input.trim().isEmpty()) admin.save(); 
+						else admin.save(input.trim());
 						break;
 					case "display":
 					case "d": // display all entries or filter by level from input of user
@@ -106,6 +111,45 @@ public class HighScoreProjekt {
 		public HighScoreAdmin(){ HighScores = new ArrayList<>(); }
 		
 		/**
+		 * submits a HighScore and returns ranking plus top ten as per project definition 
+		 * @param name The name of the user
+		 * @param dateTime The dateTime of the HighScore
+		 * @param level The name of the level
+		 * @param finishTime The time it took to finish
+		 * @return A String containing the rank and the top 10
+		 */
+		public String submit(String name, String dateTime, String level, int finishTime){
+			// Time parse may fail, 
+			try{
+				String result = "";
+				HighScore entry = new HighScore(name, Instant.parse(dateTime), level, finishTime);
+				add(entry);
+				ArrayList<HighScore> levelList = new ArrayList<>();
+				for(HighScore score : HighScores)
+					if (score.level.equals(level))
+						levelList.add(score);
+				save();
+				levelList.sort((s1,s2) -> s2.score.compareTo(s1.score));
+				int placement = levelList.indexOf(entry);
+				if (placement < 10)
+					result += "You placed " + (placement+1) + (placement == 0 ? /*1*/"st!! Congratulations!" :
+						(placement == 1 ? /*2*/"nd! GG" :
+							(placement == 2 ? /*3*/"rd!" :
+								/*4-10*/"th.")));
+				else // 11-Infinite
+					result += "You placed " + (placement+1) + "th...";
+				// Display Top Ten
+				result += "\n\n" + level + ":\n";
+				for(int i = 0; i < 10; i++)
+					result += levelList.get(i).toString();
+
+				return result;
+			} catch (DateTimeParseException e){
+				return "Couldn't parse the DateTime:\n" + e.getLocalizedMessage();
+			}
+		}
+		
+		/**
 		 * Adds a highScore instance to the list and connects it.
 		 * @param highScore The highScore instance
 		 */
@@ -114,6 +158,10 @@ public class HighScoreProjekt {
 			highScore.admin = this;
 			HighScores.add(highScore); 
 		}
+		/**
+		 * Loads the default scores
+		 */
+		public void load(){ load("default.sav"); }
 		/**
 		 * Loads all hichScores from the specified file
 		 * @param fileName The file to load from
@@ -141,7 +189,10 @@ public class HighScoreProjekt {
 				e.printStackTrace();
 			}
 		}
-		
+		/**
+		 * Saves to the default scores
+		 */
+		public void save() { save("default.sav"); }
 		/**
 		 * Saves the current highScores to the specified file
 		 * @param fileName The name of the file to save the highScores in
@@ -174,7 +225,7 @@ public class HighScoreProjekt {
 		 * Gets the size of the longest name in the highScores
 		 * @return The highest length of a name available
 		 */
-		public int nameLength(){
+		int nameLength(){
 			// Initialise this with zero, then compare each name and reset the length if longer.
 			int len = 0;
 			for (HighScore highScore : HighScores)
