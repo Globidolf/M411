@@ -14,7 +14,7 @@ public class TestAufgabe {
 		Stack<Character> messageStack = new Stack<>();
 		Character[] output;
 		
-		while ((input = Utility.ReadInput("Geben Sie eine Nachricht mit midestens zwei Zeichen ein:")).length() < 2);
+		while ((input = Utility.ReadInput("Geben Sie eine Nachricht mit mindestens zwei Zeichen ein:")).length() < 2);
 		output = new Character[input.length()];
 		for(char c : input.toCharArray()) messageStack.push(c);
 		

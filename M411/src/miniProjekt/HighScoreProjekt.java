@@ -30,6 +30,7 @@ public class HighScoreProjekt {
 		String input; 
 		// As the console IO can throw exceptions, the whole process is wrapped in a try block 
 		try {
+			admin.load();
 			// reads input and verifies it at the same time, if it is 'e' or 'exit', the loop will end
 			while (!(input = 
 					Utility.ReadInput("Load[L] / New[N] / Exit[E] / Save[S] / Display[D]")
@@ -58,9 +59,10 @@ public class HighScoreProjekt {
 							}
 						}
 						// The rest is then read inline of the add method
-						admin.add(new HighScore(
-								Utility.ReadInput("Enter your username"),
-								Utility.ReadInput("Enter the level name"),
+						Utility.WriteOutput(admin.submit(
+								Utility.ReadInput("Enter your username"), 
+								Instant.now().toString(), 
+								Utility.ReadInput("Enter the level name"), 
 								score));
 						// inform that the operation was successful
 						Utility.WriteOutput("Added new HighScore entry");
@@ -84,6 +86,7 @@ public class HighScoreProjekt {
 						break;
 				}
 			}
+			admin.save();
 		} catch (IOException e) { // exception occurred, exit program
 			e.printStackTrace();
 		} // program exits, inform user.
@@ -128,7 +131,6 @@ public class HighScoreProjekt {
 				for(HighScore score : HighScores)
 					if (score.level.equals(level))
 						levelList.add(score);
-				save();
 				levelList.sort((s1,s2) -> s2.score.compareTo(s1.score));
 				int placement = levelList.indexOf(entry);
 				if (placement < 10)
@@ -140,8 +142,8 @@ public class HighScoreProjekt {
 					result += "You placed " + (placement+1) + "th...";
 				// Display Top Ten
 				result += "\n\n" + level + ":\n";
-				for(int i = 0; i < 10; i++)
-					result += levelList.get(i).toString();
+				for(int i = 0; i < Math.min(10, levelList.size()); i++)
+					result += levelList.get(i).toString() + "\n";
 
 				return result;
 			} catch (DateTimeParseException e){
@@ -158,6 +160,7 @@ public class HighScoreProjekt {
 			highScore.admin = this;
 			HighScores.add(highScore); 
 		}
+		
 		/**
 		 * Loads the default scores
 		 */

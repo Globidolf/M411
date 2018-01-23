@@ -577,41 +577,81 @@ public abstract class ArrEx {
 	//I HATE JAVA: (Primitive array conversion functions...)
 	
 	// Primary To Object
+	/**
+	 * Converts an array of the primary type byte to an array of the object type Byte
+	 * @param arr the primary Array
+	 * @return The object Array
+	 */
 	public static Byte[] toObj(byte[] arr){
 		Byte[] result = new Byte[arr.length];
 		for (int i = 0; i < arr.length;i++) result[i] = arr[i];
 		return result;
 	}
+	/**
+	 * Converts an array of the primary type int to an array of the object type Integer
+	 * @param arr the primary Array
+	 * @return The object Array
+	 */
 	public static Integer[] toObj(int[] arr){
 		Integer[] result = new Integer[arr.length];
 		for (int i = 0; i < arr.length;i++) result[i] = arr[i];
 		return result;
 	}
+	/**
+	 * Converts an array of the primary type float to an array of the object type Float
+	 * @param arr the primary Array
+	 * @return The object Array
+	 */
 	public static Float[] toObj(float[] arr){
 		Float[] result = new Float[arr.length];
 		for (int i = 0; i < arr.length;i++) result[i] = arr[i];
 		return result;
 	}
+	/**
+	 * Converts an array of the primary type double to an array of the object type Double
+	 * @param arr the primary Array
+	 * @return The object Array
+	 */
 	public static Double[] toObj(double[] arr){
 		Double[] result = new Double[arr.length];
 		for (int i = 0; i < arr.length;i++) result[i] = arr[i];
 		return result;
 	}
+	/**
+	 * Converts an array of the primary type long to an array of the object type Long
+	 * @param arr the primary Array
+	 * @return The object Array
+	 */
 	public static Long[] toObj(long[] arr){
 		Long[] result = new Long[arr.length];
 		for (int i = 0; i < arr.length;i++) result[i] = arr[i];
 		return result;
 	}
+	/**
+	 * Converts an array of the primary type short to an array of the object type Short
+	 * @param arr the primary Array
+	 * @return The object Array
+	 */
 	public static Short[] toObj(short[] arr){
 		Short[] result = new Short[arr.length];
 		for (int i = 0; i < arr.length;i++) result[i] = arr[i];
 		return result;
 	}
+	/**
+	 * Converts an array of the primary type boolean to an array of the object type Boolean
+	 * @param arr the primary Array
+	 * @return The object Array
+	 */
 	public static Boolean[] toObj(boolean[] arr){
 		Boolean[] result = new Boolean[arr.length];
 		for (int i = 0; i < arr.length;i++) result[i] = arr[i];
 		return result;
 	}
+	/**
+	 * Converts an array of the primary type char to an array of the object type Character
+	 * @param arr the primary Array
+	 * @return The object Array
+	 */
 	public static Character[] toObj(char[] arr){
 		Character[] result = new Character[arr.length];
 		for (int i = 0; i < arr.length;i++) result[i] = arr[i];
@@ -619,41 +659,81 @@ public abstract class ArrEx {
 	}
 	
 	//Object to Primary
+	/**
+	 * Converts an array of the object type Byte to an array of the primary type byte
+	 * @param arr the object Array
+	 * @return The primary Array
+	 */
 	public static byte[] toPrim(Byte[] arr){
 		byte[] result = new byte[arr.length];
 		for (int i = 0; i < arr.length;i++) result[i] = arr[i];
 		return result;
 	}
+	/**
+	 * Converts an array of the object type Integer to an array of the primary type int
+	 * @param arr the object Array
+	 * @return The primary Array
+	 */
 	public static int[] toPrim(Integer[] arr){
 		int[] result = new int[arr.length];
 		for (int i = 0; i < arr.length;i++) result[i] = arr[i];
 		return result;
 	}
+	/**
+	 * Converts an array of the object type Float to an array of the primary type float
+	 * @param arr the object Array
+	 * @return The primary Array
+	 */
 	public static float[] toPrim(Float[] arr){
 		float[] result = new float[arr.length];
 		for (int i = 0; i < arr.length;i++) result[i] = arr[i];
 		return result;
 	}
+	/**
+	 * Converts an array of the object type Double to an array of the primary type double
+	 * @param arr the object Array
+	 * @return The primary Array
+	 */
 	public static double[] toPrim(Double[] arr){
 		double[] result = new double[arr.length];
 		for (int i = 0; i < arr.length;i++) result[i] = arr[i];
 		return result;
 	}
+	/**
+	 * Converts an array of the object type Long to an array of the primary type long
+	 * @param arr the object Array
+	 * @return The primary Array
+	 */
 	public static long[] toPrim(Long[] arr){
 		long[] result = new long[arr.length];
 		for (int i = 0; i < arr.length;i++) result[i] = arr[i];
 		return result;
 	}
+	/**
+	 * Converts an array of the object type Short to an array of the primary type short
+	 * @param arr the object Array
+	 * @return The primary Array
+	 */
 	public static short[] toPrim(Short[] arr){
 		short[] result = new short[arr.length];
 		for (int i = 0; i < arr.length;i++) result[i] = arr[i];
 		return result;
 	}
+	/**
+	 * Converts an array of the object type Boolean to an array of the primary type boolean
+	 * @param arr the object Array
+	 * @return The primary Array
+	 */
 	public static boolean[] toPrim(Boolean[] arr){
 		boolean[] result = new boolean[arr.length];
 		for (int i = 0; i < arr.length;i++) result[i] = arr[i];
 		return result;
 	}
+	/**
+	 * Converts an array of the object type Character to an array of the primary type char
+	 * @param arr the object Array
+	 * @return The primary Array
+	 */
 	public static char[] toPrim(Character[] arr){
 		char[] result = new char[arr.length];
 		for (int i = 0; i < arr.length;i++) result[i] = arr[i];
